@@ -1,6 +1,6 @@
 const clickedButton = document.getElementsByClassName("btn");
 
-import {getMostPopularMovies, getTopRatedMovies, showMovies} from "./auth.js";
+import {getMostPopularMovies, getTopRatedMovies, showMovies, getSearchResults} from "./auth.js";
 //getMostPopularMovies();
 
 for(let i = 0; i < clickedButton.length; i++) {
@@ -17,7 +17,10 @@ for(let i = 0; i < clickedButton.length; i++) {
             createTitle("Most Popular Movies Today");
             getMostPopularMovies();
         } else if(btnText == "Search") {
-            console.log("searching");
+            shownResults.innerHTML = "";
+            const userSearch = document.getElementById("search").value;
+            createTitle(`Results for search: ${userSearch}`);
+            getSearchResults(userSearch);
         }
     })
 }
