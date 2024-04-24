@@ -79,19 +79,30 @@ function showPerson(data, top) {
     count++;
     const movie = data[i];
     const {id, name, known_for, profile_path, popularity} = movie;
-    //console.log(movie);
+    
     const movieEl = document.createElement('div');
     let knownFor = [];
-    //let nameOfMedia;
+    
     movieEl.classList.add('movie');
-    for(let i = 0; i < known_for.length; i++) {
-      if(known_for[i].media_type == 'movie') {
-        knownFor.push(movie.known_for[i].media_type, movie.known_for[i].title, "<br>");
-      } else if (known_for[i].media_type == 'tv') {
-        knownFor.push(movie.known_for[i].media_type, movie.known_for[i].name, "<br>");
+    let knownForDisplay;
+    if(known_for.length == 0) {
+      knownForDisplay = "N/A";
+    } else {
+    // Format the known_for array into a string and replace the comma with a new line.
+      for(let i = 0; i < known_for.length; i++) {
+        if(known_for[i].media_type == 'movie') {
+          knownFor.push("Movie: " + known_for[i].title);
+        } else if (known_for[i].media_type == 'tv') {
+          knownFor.push("TV: " + known_for[i].name);
+        }
       }
+      
+      knownForDisplay = knownFor.join("<br>");
     }
+
+    console.log(knownFor);
     useImgUrl(profile_path, 'person');
+
     movieEl.innerHTML = `
         <div class="titleHeader">
           <span class="place">${count}</span>
@@ -99,7 +110,7 @@ function showPerson(data, top) {
         </div>
         <img class="poster" src="${displayImg}" alt="The actor's picture">
         <a href="https://www.themoviedb.org/movie/${id}" target="_blank"><h4>${name}</h4></a>
-        <div class="releaseDate" >Known for<br> ${knownFor[0]} ${knownFor[1]}</div>`;
+        <div class="releaseDate" >Known for:<br> ${knownForDisplay}</div>`;
     main.appendChild(movieEl);
   }
 }
@@ -131,7 +142,7 @@ function prepareShowResults(data) {
 }
 
 // There are results that are missing pictures. When the system encouners one of them,
-//it will display a default picture.
+// it will display a default picture.
 // Based on the media_type (person or movie) a different picture will be displayed.
 function useImgUrl(pathFromAPI, mediaType){
 
@@ -142,6 +153,8 @@ function useImgUrl(pathFromAPI, mediaType){
       displayImg = "../img/acting-concept-illustration_114360-6545.jpg";
     } else if (mediaType == 'movie') {
       displayImg = "../img/it-s-movie-time-banner-template-pop-corn-basket-cola-cup-movie-sign-blue-curtain-background_575670-2199.jpg";
+    } else {
+      displayImg = "../img/hand-drawn-flat-design-no-photo-sign_23-2149278076.jpg"
     }
   } else if (pathFromAPI != null) {
     displayImg = IMG_URL + pathFromAPI;
