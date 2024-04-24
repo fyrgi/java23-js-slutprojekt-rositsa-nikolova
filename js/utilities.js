@@ -1,9 +1,4 @@
-export function sortDsc(arr){
-    const sortedArr = [...arr];
-    return sortedArr.sort();
-}
-
-export function sortAsc(arr){
-    const sortedArr = [...arr];
-    return sortedArr.sort().reverse();
+export default function createTitle(titleText) {
+    const titleEl = document.getElementsByClassName("showingOnScreen")[0];
+    titleEl.innerHTML = titleText;
 }

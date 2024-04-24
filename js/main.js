@@ -1,8 +1,7 @@
+import createTitle from "./utilities.js";
+import {getMostPopularMovies, getTopRatedMovies, getSearchResults} from "./theMovieDdAPI.js";
+
 const clickedButton = document.getElementsByClassName("btn");
-
-import {getMostPopularMovies, getTopRatedMovies, showMovies, getSearchResults} from "./auth.js";
-//getMostPopularMovies();
-
 for(let i = 0; i < clickedButton.length; i++) {
     clickedButton[i].addEventListener('click', event=>{
         event.preventDefault();
@@ -24,7 +23,5 @@ for(let i = 0; i < clickedButton.length; i++) {
         }
     })
 }
-function createTitle(titleText) {
-    const titleEl = document.getElementsByClassName("showingOnScreen")[0];
-    titleEl.innerHTML = titleText;
-}
+
+

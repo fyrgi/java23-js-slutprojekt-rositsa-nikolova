@@ -58,12 +58,14 @@ main {
     flex-wrap: wrap;
     justify-content: center;
 }
+
 .filters {
     display: flex;
     justify-content: center;
     width: 100%; 
     margin: auto;
 }
+
 .filterBtn, .searchBtn {
     padding: 10px 20px;
     margin: 20px;
@@ -90,6 +92,16 @@ main {
     color: antiquewhite;
 }
 
+.titleHeader {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+
+}
+
 .container {
     padding-left: 5%;
     padding-right: 5%;
@@ -103,16 +115,6 @@ main {
     box-shadow: 5px 5px 10px #3a2525;
     position: relative;
     overflow: hidden;
-}
-
-.titleHeader {
-    display: flex;
-    justify-content: space-between;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-
 }
 
 .score, .place {
