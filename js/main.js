@@ -1,4 +1,4 @@
-import createTitle from "./utilities.js";
+import {createTitle, formatNumber} from "./utilities.js";
 import {getMostPopularMovies, getTopRatedMovies, getSearchResults} from "./theMovieDdAPI.js";
 
 const shownResults = document.getElementsByClassName("container")[0];
@@ -6,7 +6,6 @@ const btnPopular = document.getElementById("btnPopular");
 const btnRating = document.getElementById("btnRating");
 const btnSearch = document.getElementById("btnSearch");
 const searchForm = document.getElementById("searchForm");
-console.log(btnSearch);
 
 /***
  * Different data is displayed based on the user's choice.

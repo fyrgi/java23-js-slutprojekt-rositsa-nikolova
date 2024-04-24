@@ -1,4 +1,5 @@
 
+import { formatNumber } from "./utilities.js";
 const API_KEY = `api_key=a41bf16b13cb3836c69398b0e3523b96`;
 const ACCESS_TOKEN = `eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhNDFiZjE2YjEzY2IzODM2YzY5Mzk4YjBlMzUyM2I5NiIsInN1YiI6IjY2MjRkOTdhNjJmMzM1MDE3ZGQ5NmM5NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.xA5WNA_oYUOESVqXaquSVBZDSTI5lL-yzO3hN5GfqZ8`;
 const BASE_URL = `https://api.themoviedb.org/3/`;
@@ -14,7 +15,7 @@ function getTopRatedMovies() {
     .then((res) => res.json())
     .then((data) => {
       //console.log(data.results);
-      showMovies(data.results, 10);
+      showMovies(data.results, 10, false);
     })
     .catch((err) => console.error("error:" + err));;
 }
@@ -24,7 +25,7 @@ function getMostPopularMovies() {
   fetch(popularEndpoint)
     .then((res) => res.json())
     .then((data) => {
-      showMovies(data.results, 10);
+      showMovies(data.results, 10, false);
     })
     .catch((err) => console.error("error:" + err));
 }
@@ -42,49 +43,76 @@ function getSearchResults(searchValue) {
 }
 
 // The function display the results sent to it from other functions.
-function showMovies(data, top) {
-  let count = 0;
+function showMovies(data, top, calledFromSearch) {
+  let displayOnTopLeft = 0;
+  let displayAsSearchResult;
   if(top==0) {
     top = 10;
   }
+
   for(let i = 0; i < top; i++) {
-    count++;
+    
     const movie = data[i];
-    console.log(data[i]);
+
     const {id, title, overview, poster_path, release_date, vote_average} = movie;
-    //console.log(movie);
+    
+    // Prepare the data from vote_average to be presented with max 2 numbers after the decimal point.
+    // If the score is 0 then N/A will be displayed.
+    let voteScoreFormatted = formatNumber(vote_average);
+    if(voteScoreFormatted == 0) {
+      voteScoreFormatted = "N/A";
+    }
+
+    let releaseDate = release_date;
+    if(releaseDate == null || releaseDate == "") {
+      releaseDate = "Not available";
+    }
+
+    // In case the function was called after the user searched
+    // an additional <div> with description is added after the release date and the top left info will say movie.
+    if(calledFromSearch == true) {
+      displayOnTopLeft = "Movie"
+      displayAsSearchResult = `<div class="description">${overview}</div>`;
+    } else {
+      displayOnTopLeft++;
+      displayAsSearchResult = "";
+    }
+
     useImgUrl(poster_path, 'movie');
 
     const movieEl = document.createElement('div');
-    movieEl.classList.add('movie');
+    movieEl.classList.add('resultCard');
 
     movieEl.innerHTML = `
         <div class="titleHeader">
-          <span class="place">${count}</span>
-          <span class="score">${vote_average}</span>
+          <span class="place">${displayOnTopLeft}</span>
+          <span class="score">${voteScoreFormatted}</span>
         </div>
         <img class="poster" src="${displayImg}" alt="movie image">
         <a href="https://www.themoviedb.org/movie/${id}" target="_blank"><h4>${title}</h4></a>
-        <div class="releaseDate" >Release date: ${release_date}</div>`;
+        <div class="releaseDate" >Release date: ${releaseDate}</div>
+        ${displayAsSearchResult}`;
     main.appendChild(movieEl);
   }
 }
 
 function showPerson(data, top) {
-  let count = 0;
-  if(top==0) {
-    top = 10;
-  }
+  
   for(let i = 0; i < top; i++) {
-    count++;
-    const movie = data[i];
-    const {id, name, known_for, profile_path, popularity} = movie;
+    const person = data[i];
+    const {id, name, known_for, known_for_department, profile_path, popularity} = person;
     
-    const movieEl = document.createElement('div');
+    // Prepare the data from popularity to be presented with max 2 numbers after the decimal point.
+    let popularityScoreFormatted = formatNumber(popularity);
+
+    const personEl = document.createElement('div');
     let knownFor = [];
     
-    movieEl.classList.add('movie');
+    
+    personEl.classList.add('resultCard');
+    
     let knownForDisplay;
+    // If there is no known_for array, N/A will be displayed.
     if(known_for.length == 0) {
       knownForDisplay = "N/A";
     } else {
@@ -96,22 +124,22 @@ function showPerson(data, top) {
           knownFor.push("TV: " + known_for[i].name);
         }
       }
-      
+      // Replace the comma with a new line for the display.
       knownForDisplay = knownFor.join("<br>");
     }
+    
 
-    console.log(knownFor);
     useImgUrl(profile_path, 'person');
 
-    movieEl.innerHTML = `
+    personEl.innerHTML = `
         <div class="titleHeader">
-          <span class="place">${count}</span>
-          <span class="score">${popularity}</span>
+          <span class="place">${known_for_department}</span>
+          <span class="score">${popularityScoreFormatted}</span>
         </div>
-        <img class="poster" src="${displayImg}" alt="The actor's picture">
+        <img class="profileImage" src="${displayImg}" alt="The actor's picture">
         <a href="https://www.themoviedb.org/movie/${id}" target="_blank"><h4>${name}</h4></a>
         <div class="releaseDate" >Known for:<br> ${knownForDisplay}</div>`;
-    main.appendChild(movieEl);
+    main.appendChild(personEl);
   }
 }
 
@@ -133,7 +161,7 @@ function prepareShowResults(data) {
   }
   
   if(movieReults.length > 0) {
-    showMovies(movieReults, movieReults.length);
+    showMovies(movieReults, movieReults.length, true);
   }
 
   if(personResults.length > 0) {
@@ -160,4 +188,5 @@ function useImgUrl(pathFromAPI, mediaType){
     displayImg = IMG_URL + pathFromAPI;
   }
 }
+
 export { getMostPopularMovies, getTopRatedMovies, getSearchResults};
