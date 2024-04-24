@@ -102,7 +102,6 @@ main {
 
 }
 
-
 .container {
     padding-left: 5%;
     padding-right: 5%;
@@ -117,8 +116,6 @@ main {
     position: relative;
     overflow: hidden;
 }
-
-
 
 .score, .place {
     padding: 5px 15px;
@@ -164,6 +161,7 @@ main {
 .resultCard h4:hover {
     color: #8b4b4b;
 }
+
 .description {
     position: absolute;
     bottom: 0;
@@ -189,7 +187,6 @@ main {
     transition: transform 0.3s ease-in;
     
 }
-
 
 .movie:hover .description {
     transform: translateY(0);

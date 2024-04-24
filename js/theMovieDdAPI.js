@@ -1,5 +1,5 @@
 
-import { formatNumber } from "./utilities.js";
+import { formatNumber, checkForErrors } from "./utilities.js";
 const API_KEY = `api_key=a41bf16b13cb3836c69398b0e3523b96`;
 const ACCESS_TOKEN = `eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhNDFiZjE2YjEzY2IzODM2YzY5Mzk4YjBlMzUyM2I5NiIsInN1YiI6IjY2MjRkOTdhNjJmMzM1MDE3ZGQ5NmM5NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.xA5WNA_oYUOESVqXaquSVBZDSTI5lL-yzO3hN5GfqZ8`;
 const BASE_URL = `https://api.themoviedb.org/3/`;
@@ -10,36 +10,46 @@ const main = document.getElementsByClassName('container')[0];
 let displayImg;
 
 // The function will get the top rated movies though the respective endpoint.
-function getTopRatedMovies() {
-  fetch(topRatedEndpoint)
-    .then((res) => res.json())
-    .then((data) => {
-      //console.log(data.results);
-      showMovies(data.results, 10, false);
-    })
-    .catch((err) => console.error("error:" + err));;
+async function getTopRatedMovies() {
+  try { 
+    const response = await fetch(topRatedEndpoint);
+    if(!response.ok){
+      throw new Error(checkForErrors(res.status)) ;
+    }
+    const data = await response.json();
+    return data;
+  } catch( err ) {
+    checkForErrors(err)
+  };
 }
 
 // With this function we will get the most popular movies. Then we will use the data to get the top 10.
-function getMostPopularMovies() {
-  fetch(popularEndpoint)
-    .then((res) => res.json())
-    .then((data) => {
-      showMovies(data.results, 10, false);
-    })
-    .catch((err) => console.error("error:" + err));
+async function getMostPopularMovies() {
+  try { 
+    const response = await fetch(popularEndpoint);
+    if(!response.ok){
+      throw new Error(checkForErrors(res.status)) ;
+    }
+    const data = await response.json();
+    return data;
+  } catch( err ) {
+    checkForErrors(err)
+  };
 }
 
 // With this function we will get the search results which can be either for movie or person (TV and others excluded).
-function getSearchResults(searchValue) {
+async function getSearchResults(searchValue) {
   const searchMultiEndpoint = `${BASE_URL}search/multi?query=${searchValue}&${API_KEY}&include_adult=false&language=en-US&page=1`;
-  fetch(searchMultiEndpoint)
-    .then((res) => res.json())
-    .then((data) => {
-      prepareShowResults(data.results);
-      console.log(data.results);
-    })
-    .catch((err) => console.error("error:" + err));
+  try { 
+    const response = await fetch(searchMultiEndpoint);
+    if(!response.ok){
+      throw new Error(checkForErrors(res.status)) ;
+    }
+    const data = await response.json();
+    return data;
+  } catch( err ) {
+    checkForErrors(err)
+  };
 }
 
 // The function display the results sent to it from other functions.
@@ -189,4 +199,4 @@ function useImgUrl(pathFromAPI, mediaType){
   }
 }
 
-export { getMostPopularMovies, getTopRatedMovies, getSearchResults};
+export { getMostPopularMovies, getTopRatedMovies, getSearchResults, showMovies, prepareShowResults};

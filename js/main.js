@@ -1,5 +1,5 @@
 import {createTitle, formatNumber} from "./utilities.js";
-import {getMostPopularMovies, getTopRatedMovies, getSearchResults} from "./theMovieDdAPI.js";
+import {getMostPopularMovies, getTopRatedMovies, getSearchResults, showMovies, prepareShowResults} from "./theMovieDdAPI.js";
 
 const shownResults = document.getElementsByClassName("container")[0];
 const btnPopular = document.getElementById("btnPopular");
@@ -10,26 +10,29 @@ const searchForm = document.getElementById("searchForm");
 /***
  * Different data is displayed based on the user's choice.
  */
-btnRating.addEventListener('click', event => {
+btnRating.addEventListener('click', async event => {
     event.preventDefault();
     shownResults.innerHTML = "";
     createTitle("Top Rated Movies of All Times");
-    getTopRatedMovies();
+    const fetchedData = await getTopRatedMovies();
+    showMovies(fetchedData.results, 10, false)
 });
 
-btnPopular.addEventListener('click', event => {
+btnPopular.addEventListener('click', async event => {
     event.preventDefault();
     shownResults.innerHTML = "";
     createTitle("Most Popular Movies Today");
-    getMostPopularMovies();
+    const fetchedData = await getMostPopularMovies();
+    showMovies(fetchedData.results, 10, false)
 });
 
-searchForm.addEventListener('submit', event => {
+searchForm.addEventListener('submit', async event => {
     event.preventDefault();
     shownResults.innerHTML = "";
     const userSearch = document.getElementById("search").value;
     createTitle(`Results for search: ${userSearch}`);
-    getSearchResults(userSearch);
+    const fetchedData = await getSearchResults(userSearch);
+    prepareShowResults(fetchedData.results);
 });
 
 
