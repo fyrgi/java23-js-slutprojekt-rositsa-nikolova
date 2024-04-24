@@ -99,16 +99,17 @@ function showPerson(data, top) {
         </div>
         <img class="poster" src="${displayImg}" alt="The actor's picture">
         <a href="https://www.themoviedb.org/movie/${id}" target="_blank"><h4>${name}</h4></a>
-        <div class="releaseDate" >Known for<br> ${knownFor}</div>`;
+        <div class="releaseDate" >Known for<br> ${knownFor[0]} ${knownFor[1]}</div>`;
     main.appendChild(movieEl);
   }
 }
 
-// This function will get the data from getSearchResults
-//and distribute them to the respective function that will display them
+// After the fetch the data is separated based on the media type.
+// After separation by movies and people we will use another function to display the found results.
 function prepareShowResults(data) {
   let movieReults = [];
   let personResults = [];
+
   console.log(data.length);
   for(let i = 0; i < data.length; i++) {
     const media_type = data[i].media_type;
@@ -125,14 +126,18 @@ function prepareShowResults(data) {
   }
 
   if(personResults.length > 0) {
-    console.log(personResults);
     showPerson(personResults, personResults.length);
   }
 }
 
-// Chooses which picture will be addded to the card
+// There are results that are missing pictures. When the system encouners one of them,
+//it will display a default picture.
+// Based on the media_type (person or movie) a different picture will be displayed.
 function useImgUrl(pathFromAPI, mediaType){
+
+  // If there is no associated image in the result the pathFromAPI will be null.
   if(pathFromAPI == null) {
+    
     if(mediaType == 'person') {
       displayImg = "../img/acting-concept-illustration_114360-6545.jpg";
     } else if (mediaType == 'movie') {
