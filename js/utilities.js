@@ -1,3 +1,23 @@
+function checkIfUserIsOnline(shownResults){
+    // Show a p tag with error/informational message if the user is offline. Remove the p tag when the user is online. 
+    window.addEventListener('online', () => {
+        const messageForUser = document.getElementsByClassName("error")[0];
+        if (messageForUser) {
+            shownResults.removeChild(messageForUser);
+        }
+    });
+    
+    window.addEventListener('offline', () => {
+        shownResults.innerHTML = "";
+        const errorMessage = checkForErrors("offline")
+        const errorEl = document.createElement('p');
+        errorEl.innerHTML = errorMessage;
+        errorEl.classList.add('error');
+        shownResults.appendChild(errorEl);
+    });
+}
+
+
 function createTitle(titleText) {
     const titleEl = document.getElementsByClassName("showingOnScreen")[0];
     titleEl.innerHTML = titleText;
@@ -22,7 +42,6 @@ function checkForErrors(error) {
     const displayErrorMessageEl = document.getElementsByClassName("errorMessage")[0];
     let currentError = "Unexpected error: " + error;
     let actionMessage = "Report to administrator at admin@gritacademy.se";
-    console.log(error);
     if (error == 401) {
         currentError = "Error: " + error + " Unauthorized.";
     } else if (error == 404) {
@@ -41,9 +60,20 @@ function checkForErrors(error) {
         currentError = "Error: " + error + " Bad gateway";
     } else if ( error == "TypeError: Failed to fetch" ) {
         currentError = "Error: " + error + ". You might be disconnected from the internet.";
+    } else if ( error == "offline" ) {
+        return currentError = "You are currently offline.";
     }
-
-    console.log(currentError + " " + actionMessage);
+    return currentError + ". " + actionMessage;
 }
 
-export {createTitle, formatNumber, checkForErrors};
+function showFeedbackMessage(typeOfError, displayContainer) {
+    const displayInfoMessageEl = document.createElement("p");
+    let showInfoMessage = "";
+    if(typeOfError=="no results"){
+        showInfoMessage = "Sorry, we couldn't find any results corresponding to your search.<br>Try with another search.";
+    }
+    displayInfoMessageEl.innerHTML = showInfoMessage;
+    displayInfoMessageEl.setAttribute("class", "infoMessage");
+    displayContainer.appendChild(displayInfoMessageEl);
+}
+export {createTitle, formatNumber, checkForErrors, checkIfUserIsOnline, showFeedbackMessage};

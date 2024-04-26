@@ -1,4 +1,4 @@
-import {createTitle, formatNumber} from "./utilities.js";
+import {createTitle, formatNumber, checkForErrors, checkIfUserIsOnline, showFeedbackMessage} from "./utilities.js";
 import {getMostPopularMovies, getTopRatedMovies, getSearchResults, showMovies, prepareShowResults} from "./theMovieDdAPI.js";
 
 const shownResults = document.getElementsByClassName("container")[0];
@@ -6,6 +6,10 @@ const btnPopular = document.getElementById("btnPopular");
 const btnRating = document.getElementById("btnRating");
 const btnSearch = document.getElementById("btnSearch");
 const searchForm = document.getElementById("searchForm");
+
+
+
+checkIfUserIsOnline(shownResults);
 
 /***
  * Different data is displayed based on the user's choice.
@@ -32,7 +36,11 @@ searchForm.addEventListener('submit', async event => {
     const userSearch = document.getElementById("search").value;
     createTitle(`Results for search: ${userSearch}`);
     const fetchedData = await getSearchResults(userSearch);
-    prepareShowResults(fetchedData.results);
+    if (fetchedData.results==0) {
+        showFeedbackMessage("no results", shownResults);
+      } else {
+        prepareShowResults(fetchedData.results);
+      }
 });
 
 
