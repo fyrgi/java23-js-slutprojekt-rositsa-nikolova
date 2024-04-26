@@ -27,20 +27,24 @@ btnPopular.addEventListener('click', async event => {
     shownResults.innerHTML = "";
     createTitle("Most Popular Movies Today");
     const fetchedData = await getMostPopularMovies();
-    showMovies(fetchedData.results, 10, false)
+    showMovies(fetchedData.results, 10, false);
 });
 
 searchForm.addEventListener('submit', async event => {
     event.preventDefault();
     shownResults.innerHTML = "";
     const userSearch = document.getElementById("search").value;
-    createTitle(`Results for search: ${userSearch}`);
-    const fetchedData = await getSearchResults(userSearch);
-    if (fetchedData.results==0) {
-        showFeedbackMessage("no results", shownResults);
-      } else {
-        prepareShowResults(fetchedData.results);
-      }
+    if (userSearch.trim().length > 0) {
+        createTitle(`Results for search: ${userSearch}`);
+        const fetchedData = await getSearchResults(userSearch);
+        if (fetchedData.results==0) {
+            showFeedbackMessage("no results", shownResults);
+        } else {
+            prepareShowResults(fetchedData.results);
+        }
+    } else {
+        showFeedbackMessage("empty search string", shownResults);
+    }
 });
 
 

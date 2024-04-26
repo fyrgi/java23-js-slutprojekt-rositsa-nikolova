@@ -14,12 +14,12 @@ async function getTopRatedMovies() {
   try { 
     const response = await fetch(topRatedEndpoint);
     if(!response.ok){
-      throw new Error(checkForErrors(res.status)) ;
+      checkForErrors(response.status, main);
     }
     const data = await response.json();
     return data;
-  } catch( err ) {
-    checkForErrors(err)
+  } catch(err) {
+    checkForErrors(err, main)
   };
 }
 
@@ -28,27 +28,28 @@ async function getMostPopularMovies() {
   try { 
     const response = await fetch(popularEndpoint);
     if(!response.ok){
-      throw new Error(checkForErrors(res.status)) ;
+      checkForErrors(response.status, main);
     }
     const data = await response.json();
     return data;
-  } catch( err ) {
-    checkForErrors(err)
+  } catch(err) {
+    checkForErrors(err, main)
   };
 }
 
 // With this function we will get the search results which can be either for movie or person (TV and others excluded).
 async function getSearchResults(searchValue) {
   const searchMultiEndpoint = `${BASE_URL}search/multi?query=${searchValue}&${API_KEY}&include_adult=false&language=en-US&page=1`;
+
   try { 
     const response = await fetch(searchMultiEndpoint);
     if(!response.ok){
-      throw new Error(checkForErrors(res.status)) ;
+      checkForErrors(response.status, main);
     }
     const data = await response.json();
     return data;
-  } catch( err ) {
-    checkForErrors(err)
+  } catch(err) {
+    checkForErrors(err, main)
   };
 }
 

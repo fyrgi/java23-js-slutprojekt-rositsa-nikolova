@@ -1,28 +1,35 @@
-function checkIfUserIsOnline(shownResults){
-    // Show a p tag with error/informational message if the user is offline. Remove the p tag when the user is online. 
-    window.addEventListener('online', () => {
-        const messageForUser = document.getElementsByClassName("error")[0];
-        if (messageForUser) {
-            shownResults.removeChild(messageForUser);
-        }
-    });
-    
-    window.addEventListener('offline', () => {
-        shownResults.innerHTML = "";
-        const errorMessage = checkForErrors("offline")
-        const errorEl = document.createElement('p');
-        errorEl.innerHTML = errorMessage;
-        errorEl.classList.add('error');
-        shownResults.appendChild(errorEl);
-    });
+function checkIfUserIsOnline(displayContainer) {
+    // Check the initial online status.
+    const isOnline = window.navigator.onLine;
+
+    // The idea is to add event listeners for online and offline event but for some reason it does not work as I hoped.
+    window.addEventListener('online', handleStatusChange(isOnline, displayContainer));
+    window.addEventListener('offline', handleStatusChange(isOnline, displayContainer));
+
+    // Return the initial online status
+    return isOnline;
 }
 
+function handleStatusChange(isOnline, displayContainer) {
+    if (isOnline == 'online') {
+        const messageForUser = document.getElementsByClassName("errorMessage");
+        if (messageForUser != undefined) {
+            console.log("sadasdas");
+            displayContainer.removeChild(messageForUser);
+        }
+    } else if (isOnline == 'offline') {
+        checkForErrors("offline", displayContainer);
+    }
+}
 
+// All 3 actions have different titles. They are created here.
 function createTitle(titleText) {
     const titleEl = document.getElementsByClassName("showingOnScreen")[0];
     titleEl.innerHTML = titleText;
 }
 
+// The popularity rating and the avarage score for movie appear in a non-friendly format from the API.
+// This function fixes that by making sure there are always 2 numbers after the decimal point.
 function formatNumber(number) {
     let numberStr = number.toString();
     
@@ -38,16 +45,16 @@ function formatNumber(number) {
     return numberStr;
 }
 
-function checkForErrors(error) {
-    const displayErrorMessageEl = document.getElementsByClassName("errorMessage")[0];
-    let currentError = "Unexpected error: " + error;
+function checkForErrors(error, displayContainer) {
+    const displayErrorMessageEl = document.createElement("p");
+    let currentError = "Unexpected error! ";
     let actionMessage = "Report to administrator at admin@gritacademy.se";
     if (error == 401) {
-        currentError = "Error: " + error + " Unauthorized.";
+        currentError = "Error: " + error + " Unauthorized. " + actionMessage;
     } else if (error == 404) {
-        currentError = "Error: " + error + " Page not found";
+        currentError = "Error: " + error + " Page not found.";
     } else if (error == 400) { 
-        currentError = "Error: " + error + " Bad request";
+        currentError = "Error: " + error + " Bad request." + actionMessage;
     } else if (error == 429) {
         currentError = "Error: " + error + " Too many requests";
     } else if (error == 403) {
@@ -63,7 +70,9 @@ function checkForErrors(error) {
     } else if ( error == "offline" ) {
         return currentError = "You are currently offline.";
     }
-    return currentError + ". " + actionMessage;
+    displayErrorMessageEl.innerHTML = currentError;
+    displayErrorMessageEl.setAttribute("class", "errorMessage");
+    displayContainer.appendChild(displayErrorMessageEl);
 }
 
 function showFeedbackMessage(typeOfError, displayContainer) {
@@ -71,6 +80,8 @@ function showFeedbackMessage(typeOfError, displayContainer) {
     let showInfoMessage = "";
     if(typeOfError=="no results"){
         showInfoMessage = "Sorry, we couldn't find any results corresponding to your search.<br>Try with another search.";
+    } else if (typeOfError=="empty search string") {
+        showInfoMessage = "You have to enter something in the search bar to search for a movie or a person.";
     }
     displayInfoMessageEl.innerHTML = showInfoMessage;
     displayInfoMessageEl.setAttribute("class", "infoMessage");
