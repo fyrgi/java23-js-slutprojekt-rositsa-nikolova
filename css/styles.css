@@ -169,26 +169,20 @@ main {
     right: 0;
     padding: 10px;
     background-color: white;
+    color: #8b4b4b;
     
-    /*
-    display: block;
+    display: flex;
+    flex-direction: column;
     max-width: 300px;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    */
-    /*display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    */
     
     transform: translateY(101%);
-    transition: transform 0.3s ease-in;
-    
+    transition: transform 0.2s ease-in;
+    z-index: 1;
 }
 
-.movie:hover .description {
+.resultCard:hover .description {
     transform: translateY(0);
 }
 
