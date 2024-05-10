@@ -83,7 +83,7 @@ function showMovies(data, top, calledFromSearch) {
     // an additional <div> with description is added after the release date and the top left info will say movie.
     if(calledFromSearch == true) {
       displayOnTopLeft = "Movie";
-      displayAsSearchResult = `<div class="description">${overview}</div>`;
+      displayAsSearchResult = `<div class="description"><h5>Overview:</h5><br>${overview}</div>`;
     } else {
       displayOnTopLeft++;
       displayAsSearchResult = "";
